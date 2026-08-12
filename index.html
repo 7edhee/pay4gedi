@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Google Pay Dark Mode</title>
   <style>
     /* --- DARK THEME COLOR PALETTE --- */
@@ -27,22 +27,20 @@
       user-select: none;
     }
 
-    body {
+    html, body {
+      width: 100%;
+      height: 100%;
       background-color: #000000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+      overflow: hidden;
     }
 
-    /* --- PHONE CONTAINER --- */
-    .phone-container {
-      width: 360px;
-      height: 740px;
+    /* --- MOBILE APP WEB CONTAINER --- */
+    .mobile-app-container {
+      width: 100%;
+      max-width: 480px; /* Optional max-width for tablet/desktop preview */
+      height: 100%;
+      margin: 0 auto;
       background-color: var(--bg-main);
-      border-radius: 36px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
-      border: 12px solid #222222;
       position: relative;
       overflow: hidden;
       display: flex;
@@ -60,7 +58,6 @@
       scroll-behavior: smooth;
     }
 
-    /* Custom Scrollbar */
     .home-page::-webkit-scrollbar {
       width: 4px;
     }
@@ -76,7 +73,7 @@
       justify-content: space-between;
       background-color: #1e1e1e;
       border-radius: 28px;
-      padding: 10px 16px;
+      padding: 12px 16px;
       margin-bottom: 16px;
       cursor: pointer;
     }
@@ -224,41 +221,6 @@
       font-size: 20px;
       margin-bottom: 6px;
       transition: transform 0.15s;
-    }
-
-    /* GIFT CARDS 2-COLUMN CARDS */
-    .gift-cards-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 28px;
-    }
-
-    .gift-card {
-      background-color: #1e1e1e;
-      border-radius: 16px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      cursor: pointer;
-      border: 1px solid #2a2a2a;
-    }
-
-    .gift-card-icon {
-      font-size: 24px;
-    }
-
-    .gift-card-title {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-primary);
-    }
-
-    .gift-card-desc {
-      font-size: 11px;
-      color: var(--text-secondary);
-      line-height: 1.3;
     }
 
     /* LIST OPTIONS */
@@ -427,6 +389,104 @@
     .drawer-title { color: #ffffff; font-size: 18px; font-weight: 500; }
     .drawer-subtitle { color: #9aa0a6; font-size: 14px; font-weight: 400; }
 
+    /* --- PRE-TRANSACTION INPUT FORM SCREEN --- */
+    .input-form-page {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #121212;
+      z-index: 12;
+      display: none;
+      flex-direction: column;
+      padding: 24px 20px;
+      color: #fff;
+      overflow-y: auto;
+    }
+
+    .input-form-page.active {
+      display: flex;
+    }
+
+    .form-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .form-title {
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .form-input, .form-select {
+      background-color: #1e1e1e;
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .form-input:focus, .form-select:focus {
+      border-color: var(--accent-blue);
+    }
+
+    .amount-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .amount-input-wrapper span {
+      position: absolute;
+      left: 16px;
+      font-size: 24px;
+      color: var(--accent-blue);
+    }
+
+    .amount-input-wrapper input {
+      padding-left: 38px;
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--accent-blue);
+      width: 100%;
+    }
+
+    .proceed-pay-btn {
+      margin-top: auto;
+      background-color: var(--accent-blue-btn);
+      color: #fff;
+      border: none;
+      padding: 16px;
+      border-radius: 28px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(11, 87, 208, 0.4);
+      transition: transform 0.1s;
+    }
+
+    .proceed-pay-btn:active {
+      transform: scale(0.98);
+    }
+
     /* --- TRANSACTION LOADING OVERLAY --- */
     .loading-page {
       position: absolute;
@@ -468,7 +528,7 @@
       color: var(--text-primary);
     }
 
-    /* --- EDITABLE PAYMENT CONFIRMATION PAGE --- */
+    /* --- STATIC PAYMENT CONFIRMATION PAGE --- */
     .confirm-page {
       position: absolute;
       top: 0;
@@ -489,51 +549,14 @@
       display: flex;
     }
 
-    [contenteditable="true"] {
-      outline: 1px dashed var(--accent-blue);
-      border-radius: 4px;
-      padding: 2px 6px;
-      background-color: rgba(168, 199, 250, 0.1);
-      user-select: text !important;
-      cursor: text;
-    }
-
-    .edit-mode-active [contenteditable="true"] {
-      animation: pulseEdit 1.5s infinite alternate;
-    }
-
-    @keyframes pulseEdit {
-      0% { outline-color: rgba(168, 199, 250, 0.4); }
-      100% { outline-color: rgba(168, 199, 250, 1); }
-    }
-
     .top-controls {
       position: absolute;
       top: 16px;
       left: 16px;
       right: 16px;
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
-    }
-
-    .edit-toggle-btn {
-      background: #2a2a2a;
-      color: var(--accent-blue);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 6px 12px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .edit-toggle-btn.editing {
-      background: #0b57d0;
-      color: #ffffff;
     }
 
     .avatar-m {
@@ -703,7 +726,7 @@
 </head>
 <body>
 
-  <div class="phone-container" id="gpayApp">
+  <div class="mobile-app-container" id="gpayApp">
 
     <div class="toast" id="toast">Action Triggered</div>
 
@@ -745,27 +768,66 @@
       </div>
     </div>
 
+    <div class="input-form-page" id="inputFormPage">
+      <div class="form-header">
+        <button class="icon-btn" id="closeInputForm">✕</button>
+        <div class="form-title">Enter Payment Details</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Recipient Name</label>
+        <input type="text" class="form-input" id="inputRecipient" value="MR ANBUSELVAM S">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Amount</label>
+        <div class="amount-input-wrapper">
+          <span>₹</span>
+          <input type="number" class="form-input" id="inputAmount" value="30">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Pay From Account</label>
+        <select class="form-select" id="inputBank">
+          <option value="Canara Bank 6931">Canara Bank •••• 6931</option>
+          <option value="State Bank of India 4021">State Bank of India •••• 4021</option>
+          <option value="HDFC Bank 1109">HDFC Bank •••• 1109</option>
+          <option value="ICICI Bank 8823">ICICI Bank •••• 8823</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Receiver UPI ID (To VPA)</label>
+        <input type="text" class="form-input" id="inputToVpa" value="PhonePe • q304255663@ybl">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Add Note (Optional)</label>
+        <input type="text" class="form-input" id="inputNote" placeholder="e.g. Pocket money, Dinner, Rent">
+      </div>
+
+      <button class="proceed-pay-btn" id="proceedPayBtn">Proceed to Pay ₹<span id="btnAmountText">30</span></button>
+    </div>
+
     <div class="loading-page" id="loadingPage">
       <div class="spinner"></div>
-      <div class="loading-text">Paying MR ANBUSELVAM S...</div>
+      <div class="loading-text" id="loadingText">Paying MR ANBUSELVAM S...</div>
     </div>
 
     <div class="confirm-page" id="confirmPage">
         
         <div class="top-controls">
           <button class="icon-btn" id="closeConfirm">✕</button>
-          <button class="edit-toggle-btn" id="toggleEditBtn">
-            ✏️ <span>Edit Fields</span>
-          </button>
         </div>
 
         <div class="avatar-m" id="avatarIcon">M</div>
         <div class="recipient-label">To</div>
-        <div class="recipient-name" id="editRecipientName" contenteditable="true">MR ANBUSELVAM S</div>
+        <div class="recipient-name" id="viewRecipientName">MR ANBUSELVAM S</div>
 
         <div class="amount-display">
             <span class="rupee">₹</span>
-            <span id="editAmount" contenteditable="true">30</span>
+            <span id="viewAmount">30</span>
         </div>
 
         <button class="pay-again-btn" onclick="showToast('Initiating payment...')">Pay again</button>
@@ -776,14 +838,14 @@
         </div>
         <div class="status-divider"></div>
 
-        <div class="timestamp" id="editTimestamp" contenteditable="true">11 Aug 2026, 12:41 pm</div>
+        <div class="timestamp" id="viewTimestamp">12 Aug 2026, 6:55 pm</div>
 
         <div class="details-box">
             <div class="detail-row">
                 <div class="bank-icon">
-                    <img src="https://iconape.com/wp-content/files/yp/368817/svg/canara-bank-logo.svg" alt="Canara Bank Logo" class="bank-logo-confirm">
+                    <img src="https://iconape.com/wp-content/files/yp/368817/svg/canara-bank-logo.svg" alt="Bank Logo" class="bank-logo-confirm">
                 </div>
-                <div class="bank-name-confirm" id="editBankName" contenteditable="true">Canara Bank 6931</div>
+                <div class="bank-name-confirm" id="viewBankName">Canara Bank 6931</div>
                 <div style="color: var(--text-secondary); font-size: 12px;">▼</div>
             </div>
 
@@ -791,22 +853,22 @@
 
             <div>
                 <div class="detail-title">UPI transaction ID</div>
-                <div class="detail-value" id="editUpiTxnId" contenteditable="true">658972692595</div>
+                <div class="detail-value" id="viewUpiTxnId">658972692595</div>
             </div>
 
             <div>
-                <div class="detail-title">To: <span id="editToName" contenteditable="true">MR ANBUSELVAM S</span></div>
-                <div class="detail-value" id="editToVpa" contenteditable="true">PhonePe • q304255663@ybl</div>
+                <div class="detail-title">To: <span id="viewToName">MR ANBUSELVAM S</span></div>
+                <div class="detail-value" id="viewToVpa">PhonePe • q304255663@ybl</div>
             </div>
 
             <div>
-                <div class="detail-title">From: <span id="editFromName" contenteditable="true">ABHINAV BINS (Canara Bank)</span></div>
-                <div class="detail-value" id="editFromVpa" contenteditable="true">Google Pay • abhinavbins08@okicici</div>
+                <div class="detail-title">From: <span id="viewFromName">ABHINAV BINS</span></div>
+                <div class="detail-value" id="viewFromVpa">Google Pay • abhinavbins08@okicici</div>
             </div>
 
             <div>
                 <div class="detail-title">Google transaction ID</div>
-                <div class="detail-value" id="editGoogleTxnId" contenteditable="true">CICAgJiHusm2Bw</div>
+                <div class="detail-value" id="viewGoogleTxnId">CICAgJiHusm2Bw</div>
             </div>
         </div>
 
@@ -822,7 +884,6 @@
     </div>
 
     <div class="home-page">
-      
       <div class="search-bar" onclick="showToast('Searching contacts & payments...')">
         <div class="search-left">
           <span>🔍</span>
@@ -889,63 +950,6 @@
           <div class="circle-icon">▶</div>
           <span class="action-label">Google Play</span>
         </div>
-        <div class="action-item" onclick="showToast('Loan EMI')">
-          <div class="circle-icon">📄</div>
-          <span class="action-label">Loan EMI</span>
-        </div>
-        <div class="action-item" onclick="showToast('FASTag recharge')">
-          <div class="circle-icon">🚗</div>
-          <span class="action-label">FASTag recharge</span>
-        </div>
-        <div class="action-item" onclick="showToast('Credit card bill')">
-          <div class="circle-icon">💳</div>
-          <span class="action-label">Credit cards</span>
-        </div>
-        <div class="action-item" onclick="showToast('Postpaid mobile')">
-          <div class="circle-icon">📱</div>
-          <span class="action-label">Postpaid mobile</span>
-        </div>
-      </div>
-
-      <div class="section-header">
-        <div class="section-title">Businesses</div>
-        <div class="section-manage" onclick="showToast('Exploring businesses...')">Explore ❯</div>
-      </div>
-
-      <div class="grid-4">
-        <div class="action-item" onclick="showToast('Opening EaseMyTrip...')">
-          <div class="circle-icon" style="background:#fff; color:#000;">✈️</div>
-          <span class="action-label">EaseMyTrip</span>
-        </div>
-        <div class="action-item" onclick="showToast('Opening InstaMoney...')">
-          <div class="circle-icon" style="background:#fff; color:#000;">₹</div>
-          <span class="action-label">InstaMoney</span>
-        </div>
-        <div class="action-item" onclick="showToast('Opening ConfirmTkt...')">
-          <div class="circle-icon" style="background:#2e7d32; color:#fff;">🚆</div>
-          <span class="action-label">ConfirmTkt</span>
-        </div>
-        <div class="action-item" onclick="showToast('Opening Fibe Loans...')">
-          <div class="circle-icon" style="background:#fff; color:#000; font-weight:bold;">Fibe</div>
-          <span class="action-label">Fibe Loans</span>
-        </div>
-      </div>
-
-      <div class="section-header">
-        <div class="section-title">Gift cards & more</div>
-      </div>
-
-      <div class="gift-cards-container">
-        <div class="gift-card" onclick="showToast('Subscriptions feature')">
-          <div class="gift-card-icon">📺</div>
-          <div class="gift-card-title">Subscriptions</div>
-          <div class="gift-card-desc">Buy plans from leading OTT platforms</div>
-        </div>
-        <div class="gift-card" onclick="showToast('Gift cards feature')">
-          <div class="gift-card-icon">🛍️</div>
-          <div class="gift-card-title">Gift cards</div>
-          <div class="gift-card-desc">Buy gift cards from the biggest brands</div>
-        </div>
       </div>
 
       <div class="section-header">
@@ -961,16 +965,6 @@
           <div class="circle-icon" style="background:#e91e63; color:#fff;">🏷️</div>
           <span class="action-label">Offers</span>
         </div>
-        <div class="action-item" onclick="showToast('Checking Referrals...')">
-          <div class="circle-icon" style="background:#0288d1; color:#fff;">🎁</div>
-          <span class="action-label">Referrals</span>
-        </div>
-      </div>
-
-      <div class="list-option" onclick="showToast('Checking CIBIL score...')">
-        <div class="list-option-icon">📈</div>
-        <div class="list-option-text">Check your CIBIL score for free</div>
-        <div class="list-option-arrow">❯</div>
       </div>
 
       <div class="list-option" onclick="showToast('Loading Transaction History...')">
@@ -989,21 +983,37 @@
     const nextPageBtn = document.getElementById('nextPageBtn');
     const scannerModal = document.getElementById('scannerModal');
     const scannerDrawer = document.getElementById('scannerDrawer');
+    
+    // Input Form Elements
+    const inputFormPage = document.getElementById('inputFormPage');
+    const closeInputForm = document.getElementById('closeInputForm');
+    const inputRecipient = document.getElementById('inputRecipient');
+    const inputAmount = document.getElementById('inputAmount');
+    const inputBank = document.getElementById('inputBank');
+    const inputToVpa = document.getElementById('inputToVpa');
+    const btnAmountText = document.getElementById('btnAmountText');
+    const proceedPayBtn = document.getElementById('proceedPayBtn');
+
     const loadingPage = document.getElementById('loadingPage');
+    const loadingText = document.getElementById('loadingText');
     const confirmPage = document.getElementById('confirmPage');
     const closeConfirmBtn = document.getElementById('closeConfirm');
     const webcamFeed = document.getElementById('webcam-feed');
     const profileBtn = document.getElementById('profileBtn');
-    const toggleEditBtn = document.getElementById('toggleEditBtn');
-    const editRecipientName = document.getElementById('editRecipientName');
+    
+    // Static Receipt Fields
+    const viewRecipientName = document.getElementById('viewRecipientName');
+    const viewToName = document.getElementById('viewToName');
+    const viewAmount = document.getElementById('viewAmount');
+    const viewBankName = document.getElementById('viewBankName');
+    const viewToVpa = document.getElementById('viewToVpa');
     const avatarIcon = document.getElementById('avatarIcon');
     const toast = document.getElementById('toast');
 
     let stream = null;
-    let isEditing = false;
     let audioCtx = null;
 
-    // Web Audio Synthesizer for GPay Sounds
+    // Web Audio Synthesizer
     function initAudio() {
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1018,7 +1028,7 @@
       const gain = audioCtx.createGain();
 
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+      osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
       gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
 
@@ -1035,7 +1045,6 @@
 
       const now = audioCtx.currentTime;
 
-      // Note 1 (A5 - 880 Hz)
       const osc1 = audioCtx.createOscillator();
       const gain1 = audioCtx.createGain();
       osc1.type = 'sine';
@@ -1047,7 +1056,6 @@
       osc1.start(now);
       osc1.stop(now + 0.25);
 
-      // Note 2 (A6 - 1760 Hz) - Classic GPay payment chime
       const osc2 = audioCtx.createOscillator();
       const gain2 = audioCtx.createGain();
       osc2.type = 'sine';
@@ -1060,47 +1068,25 @@
       osc2.stop(now + 0.85);
     }
 
-    // Toggle Editing Mode
-    toggleEditBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      isEditing = !isEditing;
-      if (isEditing) {
-        confirmPage.classList.add('edit-mode-active');
-        toggleEditBtn.classList.add('editing');
-        toggleEditBtn.innerHTML = '💾 <span>Done Editing</span>';
-        showToast('Click any text field to edit!');
-      } else {
-        confirmPage.classList.remove('edit-mode-active');
-        toggleEditBtn.classList.remove('editing');
-        toggleEditBtn.innerHTML = '✏️ <span>Edit Fields</span>';
-        showToast('Changes Saved!');
-      }
+    // Dynamic Button Amount Sync
+    inputAmount.addEventListener('input', () => {
+      btnAmountText.innerText = inputAmount.value || '0';
     });
 
-    // Update Avatar Initial
-    editRecipientName.addEventListener('input', () => {
-      const name = editRecipientName.innerText.trim();
-      if (name.length > 0) {
-        const cleanName = name.replace(/^(mr|mrs|ms|dr)\.?\s+/i, '');
-        avatarIcon.innerText = cleanName.charAt(0).toUpperCase() || 'M';
-      }
-    });
+    function updateAvatar(name) {
+      const cleanName = name.replace(/^(mr|mrs|ms|dr)\.?\s+/i, '');
+      avatarIcon.innerText = cleanName.charAt(0).toUpperCase() || 'M';
+    }
 
-    // Tap anywhere to enable audio & fullscreen
     document.body.addEventListener('click', () => {
       initAudio();
-      requestFullscreenMode();
-    });
-
-    profileBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      showToast('Opening Profile Settings...');
     });
 
     openScannerBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
       confirmPage.classList.remove('active');
       loadingPage.classList.remove('active');
+      inputFormPage.classList.remove('active');
       scannerModal.classList.add('active');
       try {
         stream = await navigator.mediaDevices.getUserMedia({ 
@@ -1120,47 +1106,57 @@
 
     nextPageBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      startTransactionSequence();
+      openInputFormScreen();
     });
 
     scannerDrawer.addEventListener('click', (e) => {
       e.stopPropagation();
-      startTransactionSequence();
+      openInputFormScreen();
     });
 
-    function startTransactionSequence() {
+    function openInputFormScreen() {
       stopCamera();
       scannerModal.classList.remove('active');
+      inputFormPage.classList.add('active');
+    }
+
+    closeInputForm.addEventListener('click', (e) => {
+      e.stopPropagation();
+      inputFormPage.classList.remove('active');
+    });
+
+    proceedPayBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       
-      // Step 1: Show Loading Screen & Play Start Ping
+      const recipient = inputRecipient.value || 'MR ANBUSELVAM S';
+      const amount = inputAmount.value || '30';
+      const bank = inputBank.value || 'Canara Bank 6931';
+      const vpa = inputToVpa.value || 'PhonePe • q304255663@ybl';
+
+      viewRecipientName.innerText = recipient;
+      viewToName.innerText = recipient;
+      viewAmount.innerText = amount;
+      viewBankName.innerText = bank;
+      viewToVpa.innerText = vpa;
+      loadingText.innerText = `Paying ${recipient}...`;
+      updateAvatar(recipient);
+
+      inputFormPage.classList.remove('active');
+      
       loadingPage.classList.add('active');
       playProcessingPing();
 
-      // Step 2: Simulate Payment Delay, Play Success Sound & Show Confirmation
       setTimeout(() => {
         loadingPage.classList.remove('active');
         confirmPage.classList.add('active');
         playGPaySuccessSound();
-        requestFullscreenMode();
       }, 1800);
-    }
+    });
 
     closeConfirmBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         confirmPage.classList.remove('active');
     });
-
-    function requestFullscreenMode() {
-      if (!document.fullscreenElement) {
-        if (document.documentElement.requestFullscreen) {
-          document.documentElement.requestFullscreen();
-        } else if (document.documentElement.webkitRequestFullscreen) {
-          document.documentElement.webkitRequestFullscreen();
-        } else if (document.documentElement.msRequestFullscreen) {
-          document.documentElement.msRequestFullscreen();
-        }
-      }
-    }
 
     function stopCamera() {
       if (stream) {
