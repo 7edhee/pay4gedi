@@ -225,6 +225,41 @@
             transition: transform 0.15s;
         }
 
+        /* GIFT CARDS 2-COLUMN CARDS */
+        .gift-cards-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .gift-card {
+            background-color: #1e1e1e;
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            cursor: pointer;
+            border: 1px solid #2a2a2a;
+        }
+
+        .gift-card-icon {
+            font-size: 24px;
+        }
+
+        .gift-card-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .gift-card-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.3;
+        }
+
         /* LIST OPTIONS */
         .list-option {
             display: flex;
@@ -530,7 +565,7 @@
             color: var(--text-primary);
         }
 
-        /* --- PAYMENT CONFIRMATION PAGE --- */
+        /* --- FINAL PAYMENT CONFIRMATION PAGE --- */
         .confirm-page {
             position: absolute;
             top: 0;
@@ -980,6 +1015,12 @@
     </div>
 
     <script>
+        // ==========================================
+        // CUSTOM SOUND FILE CONFIGURATION
+        // Replace the URL below with your sound file path (.mp3, .wav, etc.)
+        // ==========================================
+        const CUSTOM_SOUND_URL = 'your-custom-sound.mp3';
+
         const openScannerBtn = document.getElementById('openScanner');
         const closeScannerBtn = document.getElementById('closeScanner');
         const nextPageBtn = document.getElementById('nextPageBtn');
@@ -1015,7 +1056,7 @@
         let stream = null;
         let audioCtx = null;
 
-        // Web Audio Synthesizer
+        // Web Audio Synthesizer for Processing Ping
         function initAudio() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1041,33 +1082,12 @@
             osc.stop(audioCtx.currentTime + 0.3);
         }
 
+        // CUSTOM TRANSACTION SOUND FUNCTION
         function playGPaySuccessSound() {
-            initAudio();
-            if (!audioCtx) return;
-
-            const now = audioCtx.currentTime;
-
-            const osc1 = audioCtx.createOscillator();
-            const gain1 = audioCtx.createGain();
-            osc1.type = 'sine';
-            osc1.frequency.setValueAtTime(880, now);
-            gain1.gain.setValueAtTime(0.25, now);
-            gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-            osc1.connect(gain1);
-            gain1.connect(audioCtx.destination);
-            osc1.start(now);
-            osc1.stop(now + 0.25);
-
-            const osc2 = audioCtx.createOscillator();
-            const gain2 = audioCtx.createGain();
-            osc2.type = 'sine';
-            osc2.frequency.setValueAtTime(1760, now + 0.12);
-            gain2.gain.setValueAtTime(0.35, now + 0.12);
-            gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
-            osc2.connect(gain2);
-            gain2.connect(audioCtx.destination);
-            osc2.start(now + 0.12);
-            osc2.stop(now + 0.85);
+            const customAudio = new Audio(CUSTOM_SOUND_URL);
+            customAudio.play().catch(error => {
+                console.error("Audio playback error:", error);
+            });
         }
 
         // Dynamic Button Amount Sync
