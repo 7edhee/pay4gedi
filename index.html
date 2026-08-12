@@ -3,82 +3,90 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Pay UI - Home & Payment Success</title>
+  <title>Google Pay Dark Mode</title>
   <style>
-    /* --- GLOBAL RESET & VARIABLES --- */
+    /* --- DARK THEME COLOR PALETTE --- */
+    :root {
+      --bg-main: #000000;
+      --bg-card: #1e1e1e;
+      --bg-surface: #181818;
+      --text-primary: #e8eaed;
+      --text-secondary: #9aa0a6;
+      --accent-blue: #a8c7fa;
+      --accent-blue-btn: #0b57d0;
+      --accent-blue-icon: #004a77;
+      --google-green: #34a853;
+      --border-color: #3c4043;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    :root {
-      --google-blue: #1a73e8;
-      --google-green: #34a853;
-      --bg-dark: #121212;
-      --text-white: #ffffff;
-      --text-grey: #babbbe;
+      user-select: none;
     }
 
     body {
-      background-color: #000;
+      background-color: #000000;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
     }
 
-    /* --- DEVICE FRAME & HOME PAGE (GPay App) --- */
+    /* --- PHONE CONTAINER --- */
     .phone-container {
       width: 360px;
       height: 740px;
-      background-color: #ffffff;
+      background-color: var(--bg-main);
       border-radius: 36px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-      border: 12px solid #1a1a1a;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
+      border: 12px solid #222222;
       position: relative;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      transition: all 0.3s ease;
     }
 
-    /* Header & GPay Logo */
-    .header-bg {
-      background: linear-gradient(180deg, #e8f0fe 0%, #f1f5fe 100%);
-      height: 220px;
-      padding: 16px;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .top-bar {
+    /* --- SCROLLABLE HOME PAGE CONTENT --- */
+    .home-page {
       width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      height: 100%;
+      overflow-y: auto;
+      padding: 16px;
+      padding-bottom: 40px;
+      color: var(--text-primary);
+      scroll-behavior: smooth;
     }
 
-    .qr-icon {
-      width: 28px;
-      height: 28px;
-      border: 2px solid var(--google-blue);
+    /* Custom Scrollbar */
+    .home-page::-webkit-scrollbar {
+      width: 4px;
+    }
+    .home-page::-webkit-scrollbar-thumb {
+      background: #333;
       border-radius: 4px;
-      position: relative;
+    }
+
+    /* TOP SEARCH BAR */
+    .search-bar {
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
+      background-color: #1e1e1e;
+      border-radius: 28px;
+      padding: 10px 16px;
+      margin-bottom: 16px;
       cursor: pointer;
     }
 
-    .qr-icon::after {
-      content: '';
-      width: 8px;
-      height: 8px;
-      background-color: var(--google-blue);
+    .search-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-secondary);
+      font-size: 15px;
     }
 
     .profile-pic {
@@ -88,120 +96,198 @@
       object-fit: cover;
     }
 
-    .gpay-logo {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 10px;
-      font-size: 22px;
-      font-weight: 500;
-      color: #5f6368;
-    }
-
-    .gpay-logo span {
-      font-weight: 600;
-      color: #3c4043;
-    }
-
-    /* Main Content Area & Grids */
-    .content-sheet {
-      background-color: #ffffff;
-      border-top-left-radius: 20px;
-      border-top-right-radius: 20px;
-      margin-top: -30px;
-      flex: 1;
-      padding: 20px 16px;
+    /* BANK PROMO BANNER */
+    .bank-banner {
+      background: linear-gradient(180deg, #0f2d24 0%, #0d1f19 100%);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 24px;
       position: relative;
-      z-index: 2;
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      border: 1px solid #194033;
     }
 
-    .sheet-handle {
-      width: 32px;
-      height: 4px;
-      background-color: #dadce0;
-      border-radius: 2px;
-      margin: 0 auto 16px auto;
+    .bank-banner h3 {
+      font-size: 18px;
+      font-weight: 500;
+      color: #fff;
+      margin-bottom: 4px;
     }
 
-    .section-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #202124;
+    .bank-banner p {
+      font-size: 13px;
+      color: var(--text-secondary);
       margin-bottom: 16px;
     }
 
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px 8px;
-      margin-bottom: 24px;
-    }
-
-    .grid-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-
-    .avatar {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 6px;
-    }
-
-    .item-label {
-      font-size: 12px;
-      color: #3c4043;
-      font-weight: 500;
-    }
-
-    /* Business Icons */
-    .biz-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #ffffff;
-      font-weight: bold;
-      font-size: 14px;
-      margin-bottom: 6px;
-    }
-
-    .eat-fit { background-color: #1a1a1a; border: 2px dashed #dadce0; }
-    .ola { background-color: #000000; border: 3px solid #cddc39; }
-    .redbus { background-color: #d8292b; }
-    .zomato { background-color: #cb202d; }
-    .mmt { background-color: #eb2026; }
-    .ovenstory { background-color: #a61a2e; }
-    .goibibo { background-color: #f26622; }
-    .urbanclap { background-color: #212121; }
-
-    /* Floating Action Button */
-    .fab {
-      position: absolute;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: var(--google-blue);
-      color: #ffffff;
-      padding: 12px 20px;
-      border-radius: 24px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      box-shadow: 0 4px 10px rgba(26, 115, 232, 0.4);
+    .banner-btn {
+      background-color: #a8c7fa;
+      color: #041e49;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 13px;
       cursor: pointer;
     }
 
-    /* --- QR SCANNER OVERLAY --- */
+    /* MAIN ACTION ICONS GRID (4 COL) */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px 8px;
+      margin-bottom: 28px;
+      text-align: center;
+    }
+
+    .action-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .action-icon {
+      width: 52px;
+      height: 52px;
+      background-color: #004a77;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #c2e7ff;
+      font-size: 22px;
+      transition: transform 0.15s;
+    }
+
+    .action-item:active .action-icon {
+      transform: scale(0.92);
+    }
+
+    .action-label {
+      font-size: 12px;
+      color: var(--text-primary);
+      line-height: 1.2;
+      font-weight: 400;
+    }
+
+    /* SECTION TITLES */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .section-manage {
+      font-size: 14px;
+      color: var(--accent-blue);
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .section-subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: -12px;
+      margin-bottom: 16px;
+    }
+
+    /* GRID LAYOUTS */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px 8px;
+      margin-bottom: 28px;
+      text-align: center;
+    }
+
+    .circle-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background-color: #004a77;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #c2e7ff;
+      font-size: 20px;
+      margin-bottom: 6px;
+      transition: transform 0.15s;
+    }
+
+    /* GIFT CARDS 2-COLUMN CARDS */
+    .gift-cards-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .gift-card {
+      background-color: #1e1e1e;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      cursor: pointer;
+      border: 1px solid #2a2a2a;
+    }
+
+    .gift-card-icon {
+      font-size: 24px;
+    }
+
+    .gift-card-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .gift-card-desc {
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.3;
+    }
+
+    /* LIST OPTIONS */
+    .list-option {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 0;
+      cursor: pointer;
+      border-bottom: 1px solid #1f1f1f;
+    }
+
+    .list-option-icon {
+      font-size: 20px;
+      color: var(--accent-blue);
+    }
+
+    .list-option-text {
+      font-size: 14px;
+      font-weight: 500;
+      flex-grow: 1;
+    }
+
+    .list-option-arrow {
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+
+    /* --- CAMERA SCANNER OVERLAY --- */
     .scanner-modal {
       position: absolute;
       top: 0;
@@ -212,9 +298,7 @@
       z-index: 10;
       display: none;
       flex-direction: column;
-      align-items: center;
       justify-content: space-between;
-      padding: 20px;
     }
 
     .scanner-modal.active {
@@ -239,88 +323,178 @@
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
+      background: rgba(0, 0, 0, 0.25);
     }
 
     .scanner-header {
       width: 100%;
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      padding: 20px 20px 0 20px;
       color: #fff;
-      font-size: 18px;
-      font-weight: 500;
     }
 
-    .close-btn {
-      background: rgba(0, 0, 0, 0.5);
+    .header-icons-right {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .icon-btn {
+      background: none;
       border: none;
       color: white;
       font-size: 20px;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .scan-target {
-      width: 220px;
-      height: 220px;
-      border: 2px solid rgba(255, 255, 255, 0.8);
-      border-radius: 16px;
+    /* RETICLE */
+    .scan-box-container {
       position: relative;
-      box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.5);
+      width: 260px;
+      height: 260px;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .scanner-footer {
+    .scan-reticle {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .corner {
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      border-style: solid;
+      border-width: 0;
+    }
+
+    .corner-tl { top: 0; left: 0; border-top-width: 5px; border-left-width: 5px; border-color: #ea4335; border-top-left-radius: 24px; }
+    .corner-tr { top: 0; right: 0; border-top-width: 5px; border-right-width: 5px; border-color: #fbc02d; border-top-right-radius: 24px; }
+    .corner-bl { bottom: 0; left: 0; border-bottom-width: 5px; border-left-width: 5px; border-color: #4285f4; border-bottom-left-radius: 24px; }
+    .corner-br { bottom: 0; right: 0; border-bottom-width: 5px; border-right-width: 5px; border-color: #34a853; border-bottom-right-radius: 24px; }
+
+    .gallery-upload-btn {
+      margin-top: 28px;
+      background-color: #e3e3e3;
+      color: #1f1f1f;
+      border: none;
+      padding: 12px 22px;
+      border-radius: 28px;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: transform 0.1s;
+    }
+
+    .scanner-drawer {
+      width: 100%;
+      background-color: #1e1e1e;
+      border-top-left-radius: 28px;
+      border-top-right-radius: 28px;
+      padding: 12px 20px 28px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
-      width: 100%;
-      margin-bottom: 10px;
-    }
-
-    .scanner-hint {
-      color: white;
-      font-size: 13px;
-    }
-
-    .next-page-btn {
-      background-color: #ffffff;
-      color: var(--google-blue);
-      border: none;
-      padding: 12px 24px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 600;
+      text-align: center;
+      gap: 8px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.6);
       cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-      transition: background-color 0.2s;
     }
 
-    .next-page-btn:active {
-      background-color: #f1f3f4;
+    .drawer-handle {
+      width: 32px;
+      height: 4px;
+      background-color: #5e6368;
+      border-radius: 2px;
+      margin-bottom: 8px;
     }
 
-    /* --- PAYMENT CONFIRMATION PAGE --- */
+    .drawer-title { color: #ffffff; font-size: 18px; font-weight: 500; }
+    .drawer-subtitle { color: #9aa0a6; font-size: 14px; font-weight: 400; }
+
+    /* --- EDITABLE PAYMENT CONFIRMATION PAGE --- */
     .confirm-page {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: var(--bg-dark);
+      background-color: #121212;
       z-index: 20;
-      color: var(--text-white);
-      padding: 40px 24px;
+      color: var(--text-primary);
+      padding: 40px 24px 24px 24px;
       display: none;
       flex-direction: column;
       align-items: center;
       overflow-y: auto;
-      cursor: pointer; /* Indicates touchable area */
     }
 
     .confirm-page.active {
       display: flex;
+    }
+
+    /* Editable Fields Styling */
+    [contenteditable="true"] {
+      outline: 1px dashed var(--accent-blue);
+      border-radius: 4px;
+      padding: 2px 6px;
+      background-color: rgba(168, 199, 250, 0.1);
+      user-select: text !important;
+      cursor: text;
+    }
+
+    .edit-mode-active [contenteditable="true"] {
+      animation: pulseEdit 1.5s infinite alternate;
+    }
+
+    @keyframes pulseEdit {
+      0% { outline-color: rgba(168, 199, 250, 0.4); }
+      100% { outline-color: rgba(168, 199, 250, 1); }
+    }
+
+    .top-controls {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .edit-toggle-btn {
+      background: #2a2a2a;
+      color: var(--accent-blue);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .edit-toggle-btn.editing {
+      background: #0b57d0;
+      color: #ffffff;
     }
 
     .avatar-m {
@@ -335,11 +509,12 @@
       font-size: 32px;
       font-weight: 500;
       margin-bottom: 24px;
+      margin-top: 20px;
     }
 
     .recipient-label {
       font-size: 14px;
-      color: var(--text-grey);
+      color: var(--text-secondary);
       margin-bottom: 4px;
     }
 
@@ -347,6 +522,7 @@
       font-size: 18px;
       font-weight: 500;
       margin-bottom: 30px;
+      text-align: center;
     }
 
     .amount-display {
@@ -361,13 +537,13 @@
 
     .amount-display .rupee {
       font-size: 40px;
-      color: var(--text-grey);
+      color: var(--text-secondary);
     }
 
     .pay-again-btn {
-      background-color: #8ab4f8;
-      color: #0d2c6c;
-      border: none;
+      background-color: #2c384e;
+      color: var(--accent-blue);
+      border: 1px solid var(--border-color);
       padding: 12px 36px;
       border-radius: 20px;
       font-size: 14px;
@@ -393,19 +569,21 @@
     .status-divider {
       width: 100%;
       height: 1px;
-      background-color: #3c4043;
+      background-color: var(--border-color);
       margin-bottom: 16px;
     }
 
     .timestamp {
-      color: var(--text-grey);
+      color: var(--text-secondary);
       font-size: 14px;
       margin-bottom: 30px;
+      text-align: center;
     }
 
     .details-box {
       width: 100%;
-      border: 1px solid #3c4043;
+      border: 1px solid var(--border-color);
+      background-color: #1a1a1a;
       border-radius: 12px;
       padding: 16px;
       display: flex;
@@ -423,7 +601,7 @@
     .bank-icon {
       width: 28px;
       height: 28px;
-      border: 1px solid #dadce0;
+      border: 1px solid var(--border-color);
       border-radius: 4px;
       background-color: #fff;
       display: flex;
@@ -443,32 +621,44 @@
       flex-grow: 1;
     }
 
-    .bank-chevron {
-      color: var(--text-grey);
-      font-size: 12px;
-    }
-
     .detail-title {
       font-size: 14px;
       font-weight: 500;
-      color: #fff;
+      color: var(--text-primary);
       margin-bottom: 4px;
     }
 
     .detail-value {
       font-size: 14px;
-      color: var(--text-grey);
+      color: var(--text-secondary);
     }
 
     .footer-gpay {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-top: auto;
+      margin-top: 24px;
       font-size: 20px;
       font-weight: 500;
       color: #fff;
       opacity: 0.8;
+      cursor: pointer;
+    }
+
+    /* TOAST NOTIFICATION */
+    .toast {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #323232;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 13px;
+      z-index: 100;
+      display: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }
   </style>
 </head>
@@ -476,35 +666,65 @@
 
   <div class="phone-container" id="gpayApp">
 
+    <div class="toast" id="toast">Action Triggered</div>
+
     <div class="scanner-modal" id="scannerModal">
       <video id="webcam-feed" autoplay playsinline></video>
       <div class="scanner-overlay">
-        <div class="scanner-header">
-          <button class="close-btn" id="closeScanner">&times;</button>
-          <span>Scan any QR code</span>
-          <div style="width: 36px;"></div>
-        </div>
-        <div class="scan-target"></div>
         
-        <div class="scanner-footer">
-          <span class="scanner-hint">Align QR code within the frame</span>
-          <button class="next-page-btn" id="nextPageBtn">Enter Details Manually →</button>
+        <div class="scanner-header">
+          <button class="icon-btn" id="closeScanner">✕</button>
+          <div class="header-icons-right">
+            <button class="icon-btn" onclick="showToast('Flashlight toggled')">🔦</button>
+            <button class="icon-btn" onclick="showToast('My QR Code')">🔳</button>
+            <button class="icon-btn" onclick="showToast('More options')">⋮</button>
+          </div>
         </div>
+
+        <div style="display: flex; flex-direction: column; align-items: center;">
+          <div class="scan-box-container">
+            <div class="scan-reticle">
+              <div class="corner corner-tl"></div>
+              <div class="corner corner-tr"></div>
+              <div class="corner corner-bl"></div>
+              <div class="corner corner-br"></div>
+            </div>
+          </div>
+
+          <button class="gallery-upload-btn" id="nextPageBtn">
+            <span>🖼️</span>
+            <span>Upload from gallery</span>
+          </button>
+        </div>
+
+        <div class="scanner-drawer" id="scannerDrawer">
+          <div class="drawer-handle"></div>
+          <div class="drawer-title">Scan any QR code to pay</div>
+          <div class="drawer-subtitle">Google Pay • PhonePe • Paytm • UPI</div>
+        </div>
+
       </div>
     </div>
 
     <div class="confirm-page" id="confirmPage">
-        <button class="close-btn" id="closeConfirm" style="position: absolute; top: 16px; left: 16px; background: rgba(255, 255, 255, 0.1);">&times;</button>
-
-        <div class="avatar-m">M</div>
-        <div class="recipient-label">To</div>
-        <div class="recipient-name">MR ANBUSELVAM S</div>
-
-        <div class="amount-display">
-            <span class="rupee">₹</span>30
+        
+        <div class="top-controls">
+          <button class="icon-btn" id="closeConfirm">✕</button>
+          <button class="edit-toggle-btn" id="toggleEditBtn">
+            ✏️ <span>Edit Fields</span>
+          </button>
         </div>
 
-        <button class="pay-again-btn">Pay again</button>
+        <div class="avatar-m" id="avatarIcon">M</div>
+        <div class="recipient-label">To</div>
+        <div class="recipient-name" id="editRecipientName" contenteditable="true">MR ANBUSELVAM S</div>
+
+        <div class="amount-display">
+            <span class="rupee">₹</span>
+            <span id="editAmount" contenteditable="true">30</span>
+        </div>
+
+        <button class="pay-again-btn" onclick="showToast('Initiating payment...')">Pay again</button>
 
         <div class="status-area">
             <span class="completed-icon">✓</span>
@@ -512,37 +732,37 @@
         </div>
         <div class="status-divider"></div>
 
-        <div class="timestamp">11 Aug 2026, 12:41 pm</div>
+        <div class="timestamp" id="editTimestamp" contenteditable="true">11 Aug 2026, 12:41 pm</div>
 
         <div class="details-box">
             <div class="detail-row">
                 <div class="bank-icon">
                     <img src="https://iconape.com/wp-content/files/yp/368817/svg/canara-bank-logo.svg" alt="Canara Bank Logo" class="bank-logo-confirm">
                 </div>
-                <div class="bank-name-confirm">Canara Bank 6931</div>
-                <div class="bank-chevron">▼</div>
+                <div class="bank-name-confirm" id="editBankName" contenteditable="true">Canara Bank 6931</div>
+                <div style="color: var(--text-secondary); font-size: 12px;">▼</div>
             </div>
 
             <div class="status-divider" style="margin: 0;"></div>
 
             <div>
                 <div class="detail-title">UPI transaction ID</div>
-                <div class="detail-value">658972692595</div>
+                <div class="detail-value" id="editUpiTxnId" contenteditable="true">658972692595</div>
             </div>
 
             <div>
-                <div class="detail-title">To: MR ANBUSELVAM S</div>
-                <div class="detail-value">PhonePe • q304255663@ybl</div>
+                <div class="detail-title">To: <span id="editToName" contenteditable="true">MR ANBUSELVAM S</span></div>
+                <div class="detail-value" id="editToVpa" contenteditable="true">PhonePe • q304255663@ybl</div>
             </div>
 
             <div>
-                <div class="detail-title">From: ABHINAV BINS (Canara Bank)</div>
-                <div class="detail-value">Google Pay • abhinavbins08@okicici</div>
+                <div class="detail-title">From: <span id="editFromName" contenteditable="true">ABHINAV BINS (Canara Bank)</span></div>
+                <div class="detail-value" id="editFromVpa" contenteditable="true">Google Pay • abhinavbins08@okicici</div>
             </div>
 
             <div>
                 <div class="detail-title">Google transaction ID</div>
-                <div class="detail-value">CICAgJiHusm2Bw</div>
+                <div class="detail-value" id="editGoogleTxnId" contenteditable="true">CICAgJiHusm2Bw</div>
             </div>
         </div>
 
@@ -555,57 +775,168 @@
             </svg>
             Pay
         </div>
+    </div>
+
+    <div class="home-page">
+      
+      <div class="search-bar" onclick="showToast('Searching contacts & payments...')">
+        <div class="search-left">
+          <span>🔍</span>
+          <span>Pay anyone on UPI</span>
+        </div>
+        <img class="profile-pic" id="profileBtn" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="Profile">
+      </div>
+
+      <div class="bank-banner">
+        <h3>Start with your bank</h3>
+        <p>Send and receive money securely</p>
+        <button class="banner-btn" onclick="showToast('Linking bank account...')">Add bank account</button>
+      </div>
+
+      <div class="quick-actions">
+        <div class="action-item" id="openScanner">
+          <div class="action-icon">📷</div>
+          <span class="action-label">Scan any QR code</span>
+        </div>
+        <div class="action-item" onclick="showToast('Pay anyone')">
+          <div class="action-icon">👤</div>
+          <span class="action-label">Pay anyone</span>
+        </div>
+        <div class="action-item" onclick="showToast('Bank transfer')">
+          <div class="action-icon">🏛️</div>
+          <span class="action-label">Bank transfer</span>
+        </div>
+        <div class="action-item" onclick="showToast('Mobile recharge')">
+          <div class="action-icon">📱</div>
+          <span class="action-label">Mobile recharge</span>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title">People</div>
+      </div>
+      <div class="grid-4">
+        <div class="action-item" onclick="showToast('Opening Pocket money...')">
+          <div class="circle-icon" style="background-color: #2a2a2a; color: #fff;">♡</div>
+          <span class="action-label">Pocket money</span>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title">Bills & recharges</div>
+        <div class="section-manage" onclick="showToast('Managing bills...')">Manage ❯</div>
+      </div>
+      <div class="section-subtitle">Get reminders and pay on time</div>
+
+      <div class="grid-4">
+        <div class="action-item" onclick="showToast('Mobile recharge')">
+          <div class="circle-icon">📱</div>
+          <span class="action-label">Mobile recharge</span>
+        </div>
+        <div class="action-item" onclick="showToast('Electricity bill')">
+          <div class="circle-icon">💡</div>
+          <span class="action-label">Electricity</span>
+        </div>
+        <div class="action-item" onclick="showToast('DTH / Cable TV')">
+          <div class="circle-icon">📺</div>
+          <span class="action-label">DTH / Cable TV</span>
+        </div>
+        <div class="action-item" onclick="showToast('Google Play recharge')">
+          <div class="circle-icon">▶</div>
+          <span class="action-label">Google Play</span>
+        </div>
+        <div class="action-item" onclick="showToast('Loan EMI')">
+          <div class="circle-icon">📄</div>
+          <span class="action-label">Loan EMI</span>
+        </div>
+        <div class="action-item" onclick="showToast('FASTag recharge')">
+          <div class="circle-icon">🚗</div>
+          <span class="action-label">FASTag recharge</span>
+        </div>
+        <div class="action-item" onclick="showToast('Credit card bill')">
+          <div class="circle-icon">💳</div>
+          <span class="action-label">Credit cards</span>
+        </div>
+        <div class="action-item" onclick="showToast('Postpaid mobile')">
+          <div class="circle-icon">📱</div>
+          <span class="action-label">Postpaid mobile</span>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title">Businesses</div>
+        <div class="section-manage" onclick="showToast('Exploring businesses...')">Explore ❯</div>
+      </div>
+
+      <div class="grid-4">
+        <div class="action-item" onclick="showToast('Opening EaseMyTrip...')">
+          <div class="circle-icon" style="background:#fff; color:#000;">✈️</div>
+          <span class="action-label">EaseMyTrip</span>
+        </div>
+        <div class="action-item" onclick="showToast('Opening InstaMoney...')">
+          <div class="circle-icon" style="background:#fff; color:#000;">₹</div>
+          <span class="action-label">InstaMoney</span>
+        </div>
+        <div class="action-item" onclick="showToast('Opening ConfirmTkt...')">
+          <div class="circle-icon" style="background:#2e7d32; color:#fff;">🚆</div>
+          <span class="action-label">ConfirmTkt</span>
+        </div>
+        <div class="action-item" onclick="showToast('Opening Fibe Loans...')">
+          <div class="circle-icon" style="background:#fff; color:#000; font-weight:bold;">Fibe</div>
+          <span class="action-label">Fibe Loans</span>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title">Gift cards & more</div>
+      </div>
+
+      <div class="gift-cards-container">
+        <div class="gift-card" onclick="showToast('Subscriptions feature')">
+          <div class="gift-card-icon">📺</div>
+          <div class="gift-card-title">Subscriptions</div>
+          <div class="gift-card-desc">Buy plans from leading OTT platforms</div>
+        </div>
+        <div class="gift-card" onclick="showToast('Gift cards feature')">
+          <div class="gift-card-icon">🛍️</div>
+          <div class="gift-card-title">Gift cards</div>
+          <div class="gift-card-desc">Buy gift cards from the biggest brands</div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title">Offers & rewards</div>
+      </div>
+
+      <div class="grid-4">
+        <div class="action-item" onclick="showToast('Checking Rewards...')">
+          <div class="circle-icon" style="background:#fbc02d; color:#000;">🏆</div>
+          <span class="action-label">Rewards</span>
+        </div>
+        <div class="action-item" onclick="showToast('Checking Offers...')">
+          <div class="circle-icon" style="background:#e91e63; color:#fff;">🏷️</div>
+          <span class="action-label">Offers</span>
+        </div>
+        <div class="action-item" onclick="showToast('Checking Referrals...')">
+          <div class="circle-icon" style="background:#0288d1; color:#fff;">🎁</div>
+          <span class="action-label">Referrals</span>
+        </div>
+      </div>
+
+      <div class="list-option" onclick="showToast('Checking CIBIL score...')">
+        <div class="list-option-icon">📈</div>
+        <div class="list-option-text">Check your CIBIL score for free</div>
+        <div class="list-option-arrow">❯</div>
+      </div>
+
+      <div class="list-option" onclick="showToast('Loading Transaction History...')">
+        <div class="list-option-icon">📜</div>
+        <div class="list-option-text">See transaction history</div>
+        <div class="list-option-arrow">❯</div>
+      </div>
 
     </div>
 
-    <div class="header-bg">
-      <div class="top-bar">
-        <div class="qr-icon" id="openScanner" title="Scan QR Code"></div>
-        <img class="profile-pic" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" alt="Profile">
-      </div>
-      <div class="gpay-logo">
-        <svg width="24" height="24" viewBox="0 0 24 24">
-          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-        </svg>
-        <span>Pay</span>
-      </div>
-    </div>
-
-    <div class="content-sheet">
-      <div class="sheet-handle"></div>
-
-      <div class="section-title">People</div>
-      <div class="grid-container">
-        <div class="grid-item"><img class="avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Puja"><span class="item-label">Puja</span></div>
-        <div class="grid-item"><img class="avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="Sahil"><span class="item-label">Sahil</span></div>
-        <div class="grid-item"><img class="avatar" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80" alt="Anu"><span class="item-label">Anu</span></div>
-        <div class="grid-item"><img class="avatar" src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100&auto=format&fit=crop&q=80" alt="Meghna"><span class="item-label">Meghna</span></div>
-        <div class="grid-item"><img class="avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80" alt="Madhav"><span class="item-label">Madhav</span></div>
-        <div class="grid-item"><img class="avatar" src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&auto=format&fit=crop&q=80" alt="Vijay"><span class="item-label">Vijay</span></div>
-        <div class="grid-item"><img class="avatar" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&auto=format&fit=crop&q=80" alt="Rishi"><span class="item-label">Rishi</span></div>
-        <div class="grid-item"><img class="avatar" src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=100&auto=format&fit=crop&q=80" alt="Naina"><span class="item-label">Naina</span></div>
-      </div>
-
-      <div class="section-title">Businesses</div>
-      <div class="grid-container">
-        <div class="grid-item"><div class="biz-icon eat-fit">eat</div><span class="item-label">eat.fit</span></div>
-        <div class="grid-item"><div class="biz-icon ola">OLA</div><span class="item-label">Ola</span></div>
-        <div class="grid-item"><div class="biz-icon redbus">red</div><span class="item-label">redBus</span></div>
-        <div class="grid-item"><div class="biz-icon zomato">zomato</div><span class="item-label">Zomato</span></div>
-        <div class="grid-item"><div class="biz-icon mmt">my</div><span class="item-label">MakeMyTrip</span></div>
-        <div class="grid-item"><div class="biz-icon ovenstory">OS</div><span class="item-label">Oven Story</span></div>
-        <div class="grid-item"><div class="biz-icon goibibo">go</div><span class="item-label">goibibo</span></div>
-        <div class="grid-item"><div class="biz-icon urbanclap">UC</div><span class="item-label">UrbanClap</span></div>
-      </div>
-
-      <div class="fab">
-        <span>+</span>
-        <span>New payment</span>
-      </div>
-    </div>
   </div>
 
   <script>
@@ -613,13 +944,59 @@
     const closeScannerBtn = document.getElementById('closeScanner');
     const nextPageBtn = document.getElementById('nextPageBtn');
     const scannerModal = document.getElementById('scannerModal');
+    const scannerDrawer = document.getElementById('scannerDrawer');
     const webcamFeed = document.getElementById('webcam-feed');
+    const profileBtn = document.getElementById('profileBtn');
     let stream = null;
 
     const confirmPage = document.getElementById('confirmPage');
     const closeConfirmBtn = document.getElementById('closeConfirm');
+    const toggleEditBtn = document.getElementById('toggleEditBtn');
+    const editRecipientName = document.getElementById('editRecipientName');
+    const avatarIcon = document.getElementById('avatarIcon');
+    const toast = document.getElementById('toast');
 
-    openScannerBtn.addEventListener('click', async () => {
+    let isEditing = false;
+
+    // Toggle Editing Mode
+    toggleEditBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      isEditing = !isEditing;
+      if (isEditing) {
+        confirmPage.classList.add('edit-mode-active');
+        toggleEditBtn.classList.add('editing');
+        toggleEditBtn.innerHTML = '💾 <span>Done Editing</span>';
+        showToast('Click any text field to edit!');
+      } else {
+        confirmPage.classList.remove('edit-mode-active');
+        toggleEditBtn.classList.remove('editing');
+        toggleEditBtn.innerHTML = '✏️ <span>Edit Fields</span>';
+        showToast('Changes Saved!');
+      }
+    });
+
+    // Dynamically update Avatar Initial when Name Changes
+    editRecipientName.addEventListener('input', () => {
+      const name = editRecipientName.innerText.trim();
+      if (name.length > 0) {
+        // Grab first letter of the name (ignoring "MR " or "MRS " if present)
+        const cleanName = name.replace(/^(mr|mrs|ms|dr)\.?\s+/i, '');
+        avatarIcon.innerText = cleanName.charAt(0).toUpperCase() || 'M';
+      }
+    });
+
+    // Trigger Fullscreen on screen tap
+    document.body.addEventListener('click', () => {
+      requestFullscreenMode();
+    });
+
+    profileBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showToast('Opening Profile Settings...');
+    });
+
+    openScannerBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
       confirmPage.classList.remove('active');
       scannerModal.classList.add('active');
       try {
@@ -632,52 +1009,59 @@
       }
     });
 
-    closeScannerBtn.addEventListener('click', () => {
-      stopCamera();
-      scannerModal.classList.remove('active');
-    });
-
-    // Navigation logic: Open confirmation page and request full screen mode
-    nextPageBtn.addEventListener('click', (e) => {
+    closeScannerBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       stopCamera();
       scannerModal.classList.remove('active');
-      confirmPage.classList.add('active');
-
-      // Trigger fullscreen on initial entry
-      requestFullscreenMode();
     });
 
-    // Touch screen event to trigger fullscreen if not already active
-    confirmPage.addEventListener('click', () => {
+    nextPageBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      goToConfirmPage();
+    });
+
+    scannerDrawer.addEventListener('click', (e) => {
+      e.stopPropagation();
+      goToConfirmPage();
+    });
+
+    function goToConfirmPage() {
+      stopCamera();
+      scannerModal.classList.remove('active');
+      confirmPage.classList.add('active');
       requestFullscreenMode();
+    }
+
+    closeConfirmBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        confirmPage.classList.remove('active');
     });
 
     function requestFullscreenMode() {
       if (!document.fullscreenElement) {
         if (document.documentElement.requestFullscreen) {
           document.documentElement.requestFullscreen();
-        } else if (document.documentElement.webkitRequestFullscreen) { /* Safari */
+        } else if (document.documentElement.webkitRequestFullscreen) {
           document.documentElement.webkitRequestFullscreen();
-        } else if (document.documentElement.msRequestFullscreen) { /* IE11 */
+        } else if (document.documentElement.msRequestFullscreen) {
           document.documentElement.msRequestFullscreen();
         }
       }
     }
-
-    closeConfirmBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        confirmPage.classList.remove('active');
-        if (document.exitFullscreen && document.fullscreenElement) {
-          document.exitFullscreen();
-        }
-    });
 
     function stopCamera() {
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
         stream = null;
       }
+    }
+
+    function showToast(message) {
+      toast.innerText = message;
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 2000);
     }
   </script>
 
