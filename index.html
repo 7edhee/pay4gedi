@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Google Pay UI - Home & Payment Success</title>
   <style>
-    /* --- GLOBAL RESET & VARIABLES ---
-    */
+    /* --- GLOBAL RESET & VARIABLES --- */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -17,21 +16,20 @@
     :root {
       --google-blue: #1a73e8;
       --google-green: #34a853;
-      --bg-dark: #121212; /* Confirm page dark bg */
+      --bg-dark: #121212;
       --text-white: #ffffff;
       --text-grey: #babbbe;
     }
 
     body {
-      background-color: #f0f0f0;
+      background-color: #000;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
     }
 
-    /* --- DEVICE FRAME & HOME PAGE (GPay App) ---
-    */
+    /* --- DEVICE FRAME & HOME PAGE (GPay App) --- */
     .phone-container {
       width: 360px;
       height: 740px;
@@ -43,6 +41,7 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      transition: all 0.3s ease;
     }
 
     /* Header & GPay Logo */
@@ -160,7 +159,7 @@
       font-weight: 500;
     }
 
-    /* Business Icons Custom Styles */
+    /* Business Icons */
     .biz-icon {
       width: 52px;
       height: 52px;
@@ -183,7 +182,7 @@
     .goibibo { background-color: #f26622; }
     .urbanclap { background-color: #212121; }
 
-    /* Floating Action Button (FAB) */
+    /* Floating Action Button */
     .fab {
       position: absolute;
       bottom: 24px;
@@ -202,8 +201,7 @@
       cursor: pointer;
     }
 
-    /* --- QR SCANNER & NEXT PAGE BUTTON ---
-    */
+    /* --- QR SCANNER OVERLAY --- */
     .scanner-modal {
       position: absolute;
       top: 0;
@@ -212,7 +210,7 @@
       height: 100%;
       background-color: #000;
       z-index: 10;
-      display: none; /* Initial state: hidden */
+      display: none;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
@@ -286,7 +284,6 @@
       font-size: 13px;
     }
 
-    /* Button for Page Navigation */
     .next-page-btn {
       background-color: #ffffff;
       color: var(--google-blue);
@@ -304,8 +301,7 @@
       background-color: #f1f3f4;
     }
 
-    /* --- PAYMENT CONFIRMATION PAGE (IMAGE_1.PNG REPLICA) ---
-    */
+    /* --- PAYMENT CONFIRMATION PAGE --- */
     .confirm-page {
       position: absolute;
       top: 0;
@@ -316,17 +312,17 @@
       z-index: 20;
       color: var(--text-white);
       padding: 40px 24px;
-      display: none; /* Initial state: hidden */
+      display: none;
       flex-direction: column;
       align-items: center;
       overflow-y: auto;
+      cursor: pointer; /* Indicates touchable area */
     }
 
     .confirm-page.active {
       display: flex;
     }
 
-    /* Header Icons & Recipient */
     .avatar-m {
       width: 80px;
       height: 80px;
@@ -353,7 +349,6 @@
       margin-bottom: 30px;
     }
 
-    /* Amount Section */
     .amount-display {
       font-size: 64px;
       font-weight: 400;
@@ -369,9 +364,8 @@
       color: var(--text-grey);
     }
 
-    /* Pay Again Button */
     .pay-again-btn {
-      background-color: #8ab4f8; /* Confirm page pay again color */
+      background-color: #8ab4f8;
       color: #0d2c6c;
       border: none;
       padding: 12px 36px;
@@ -382,7 +376,6 @@
       margin-bottom: 24px;
     }
 
-    /* Status Section */
     .status-area {
       display: flex;
       align-items: center;
@@ -397,11 +390,6 @@
       font-size: 16px;
     }
 
-    .status-text {
-      color: var(--text-white);
-    }
-
-    /* Divider */
     .status-divider {
       width: 100%;
       height: 1px;
@@ -409,17 +397,14 @@
       margin-bottom: 16px;
     }
 
-    /* Timestamp */
     .timestamp {
       color: var(--text-grey);
       font-size: 14px;
       margin-bottom: 30px;
     }
 
-    /* Transaction Details Box */
     .details-box {
       width: 100%;
-      background-color: transparent;
       border: 1px solid #3c4043;
       border-radius: 12px;
       padding: 16px;
@@ -428,7 +413,6 @@
       gap: 16px;
     }
 
-    /* Detail Row */
     .detail-row {
       display: flex;
       justify-content: flex-start;
@@ -446,9 +430,9 @@
       justify-content: center;
       align-items: center;
     }
-    
+
     .bank-logo-confirm {
-      width: 20px; 
+      width: 20px;
       height: 20px;
     }
 
@@ -464,11 +448,6 @@
       font-size: 12px;
     }
 
-    /* Detail Content Lines */
-    .detail-content {
-      padding-left: 0;
-    }
-
     .detail-title {
       font-size: 14px;
       font-weight: 500;
@@ -481,7 +460,6 @@
       color: var(--text-grey);
     }
 
-    /* Footer GPay Logo */
     .footer-gpay {
       display: flex;
       align-items: center;
@@ -491,10 +469,6 @@
       font-weight: 500;
       color: #fff;
       opacity: 0.8;
-    }
-
-    .footer-divider {
-        color: #3c4043;
     }
   </style>
 </head>
@@ -534,7 +508,7 @@
 
         <div class="status-area">
             <span class="completed-icon">✓</span>
-            <span class="status-text">Completed</span>
+            <span>Completed</span>
         </div>
         <div class="status-divider"></div>
 
@@ -551,22 +525,22 @@
 
             <div class="status-divider" style="margin: 0;"></div>
 
-            <div class="detail-content">
+            <div>
                 <div class="detail-title">UPI transaction ID</div>
                 <div class="detail-value">658972692595</div>
             </div>
 
-            <div class="detail-content">
+            <div>
                 <div class="detail-title">To: MR ANBUSELVAM S</div>
                 <div class="detail-value">PhonePe • q304255663@ybl</div>
             </div>
 
-            <div class="detail-content">
+            <div>
                 <div class="detail-title">From: ABHINAV BINS (Canara Bank)</div>
                 <div class="detail-value">Google Pay • abhinavbins08@okicici</div>
             </div>
 
-            <div class="detail-content">
+            <div>
                 <div class="detail-title">Google transaction ID</div>
                 <div class="detail-value">CICAgJiHusm2Bw</div>
             </div>
@@ -605,74 +579,26 @@
 
       <div class="section-title">People</div>
       <div class="grid-container">
-        <div class="grid-item">
-          <img class="avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Puja">
-          <span class="item-label">Puja</span>
-        </div>
-        <div class="grid-item">
-          <img class="avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="Sahil">
-          <span class="item-label">Sahil</span>
-        </div>
-        <div class="grid-item">
-          <img class="avatar" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80" alt="Anu">
-          <span class="item-label">Anu</span>
-        </div>
-        <div class="grid-item">
-          <img class="avatar" src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100&auto=format&fit=crop&q=80" alt="Meghna">
-          <span class="item-label">Meghna</span>
-        </div>
-        <div class="grid-item">
-          <img class="avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80" alt="Madhav">
-          <span class="item-label">Madhav</span>
-        </div>
-        <div class="grid-item">
-          <img class="avatar" src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&auto=format&fit=crop&q=80" alt="Vijay">
-          <span class="item-label">Vijay</span>
-        </div>
-        <div class="grid-item">
-          <img class="avatar" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&auto=format&fit=crop&q=80" alt="Rishi">
-          <span class="item-label">Rishi</span>
-        </div>
-        <div class="grid-item">
-          <img class="avatar" src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=100&auto=format&fit=crop&q=80" alt="Naina">
-          <span class="item-label">Naina</span>
-        </div>
+        <div class="grid-item"><img class="avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Puja"><span class="item-label">Puja</span></div>
+        <div class="grid-item"><img class="avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="Sahil"><span class="item-label">Sahil</span></div>
+        <div class="grid-item"><img class="avatar" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80" alt="Anu"><span class="item-label">Anu</span></div>
+        <div class="grid-item"><img class="avatar" src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100&auto=format&fit=crop&q=80" alt="Meghna"><span class="item-label">Meghna</span></div>
+        <div class="grid-item"><img class="avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80" alt="Madhav"><span class="item-label">Madhav</span></div>
+        <div class="grid-item"><img class="avatar" src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&auto=format&fit=crop&q=80" alt="Vijay"><span class="item-label">Vijay</span></div>
+        <div class="grid-item"><img class="avatar" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&auto=format&fit=crop&q=80" alt="Rishi"><span class="item-label">Rishi</span></div>
+        <div class="grid-item"><img class="avatar" src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=100&auto=format&fit=crop&q=80" alt="Naina"><span class="item-label">Naina</span></div>
       </div>
 
       <div class="section-title">Businesses</div>
       <div class="grid-container">
-        <div class="grid-item">
-          <div class="biz-icon eat-fit">eat</div>
-          <span class="item-label">eat.fit</span>
-        </div>
-        <div class="grid-item">
-          <div class="biz-icon ola">OLA</div>
-          <span class="item-label">Ola</span>
-        </div>
-        <div class="grid-item">
-          <div class="biz-icon redbus">red</div>
-          <span class="item-label">redBus</span>
-        </div>
-        <div class="grid-item">
-          <div class="biz-icon zomato">zomato</div>
-          <span class="item-label">Zomato</span>
-        </div>
-        <div class="grid-item">
-          <div class="biz-icon mmt">my</div>
-          <span class="item-label">MakeMyTrip</span>
-        </div>
-        <div class="grid-item">
-          <div class="biz-icon ovenstory">OS</div>
-          <span class="item-label">Oven Story</span>
-        </div>
-        <div class="grid-item">
-          <div class="biz-icon goibibo">go</div>
-          <span class="item-label">goibibo</span>
-        </div>
-        <div class="grid-item">
-          <div class="biz-icon urbanclap">UC</div>
-          <span class="item-label">UrbanClap</span>
-        </div>
+        <div class="grid-item"><div class="biz-icon eat-fit">eat</div><span class="item-label">eat.fit</span></div>
+        <div class="grid-item"><div class="biz-icon ola">OLA</div><span class="item-label">Ola</span></div>
+        <div class="grid-item"><div class="biz-icon redbus">red</div><span class="item-label">redBus</span></div>
+        <div class="grid-item"><div class="biz-icon zomato">zomato</div><span class="item-label">Zomato</span></div>
+        <div class="grid-item"><div class="biz-icon mmt">my</div><span class="item-label">MakeMyTrip</span></div>
+        <div class="grid-item"><div class="biz-icon ovenstory">OS</div><span class="item-label">Oven Story</span></div>
+        <div class="grid-item"><div class="biz-icon goibibo">go</div><span class="item-label">goibibo</span></div>
+        <div class="grid-item"><div class="biz-icon urbanclap">UC</div><span class="item-label">UrbanClap</span></div>
       </div>
 
       <div class="fab">
@@ -683,7 +609,6 @@
   </div>
 
   <script>
-    // Elements for Home/Scanner
     const openScannerBtn = document.getElementById('openScanner');
     const closeScannerBtn = document.getElementById('closeScanner');
     const nextPageBtn = document.getElementById('nextPageBtn');
@@ -691,13 +616,11 @@
     const webcamFeed = document.getElementById('webcam-feed');
     let stream = null;
 
-    // Elements for Confirmation Page
     const confirmPage = document.getElementById('confirmPage');
     const closeConfirmBtn = document.getElementById('closeConfirm');
 
-    // --- Scanner Logic ---
     openScannerBtn.addEventListener('click', async () => {
-      confirmPage.classList.remove('active'); // Ensure success page is hidden
+      confirmPage.classList.remove('active');
       scannerModal.classList.add('active');
       try {
         stream = await navigator.mediaDevices.getUserMedia({ 
@@ -706,7 +629,6 @@
         webcamFeed.srcObject = stream;
       } catch (err) {
         console.error("Camera access error:", err);
-        alert("Camera access was denied or is unavailable. Navigation button still works.");
       }
     });
 
@@ -715,18 +637,40 @@
       scannerModal.classList.remove('active');
     });
 
-    // --- Navigation Logic for the new button under camera ---
-    nextPageBtn.addEventListener('click', () => {
+    // Navigation logic: Open confirmation page and request full screen mode
+    nextPageBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       stopCamera();
       scannerModal.classList.remove('active');
-      // Show the newly replica success page
       confirmPage.classList.add('active');
+
+      // Trigger fullscreen on initial entry
+      requestFullscreenMode();
     });
 
-    // --- Close logic for the confirmation page itself ---
-    closeConfirmBtn.addEventListener('click', () => {
+    // Touch screen event to trigger fullscreen if not already active
+    confirmPage.addEventListener('click', () => {
+      requestFullscreenMode();
+    });
+
+    function requestFullscreenMode() {
+      if (!document.fullscreenElement) {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen();
+        } else if (document.documentElement.webkitRequestFullscreen) { /* Safari */
+          document.documentElement.webkitRequestFullscreen();
+        } else if (document.documentElement.msRequestFullscreen) { /* IE11 */
+          document.documentElement.msRequestFullscreen();
+        }
+      }
+    }
+
+    closeConfirmBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
         confirmPage.classList.remove('active');
-        // Return to app home
+        if (document.exitFullscreen && document.fullscreenElement) {
+          document.exitFullscreen();
+        }
     });
 
     function stopCamera() {
