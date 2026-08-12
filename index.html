@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Pay UI - Home & Payment Success</title>
+  <style>
+    /* --- GLOBAL RESET & VARIABLES ---
+    */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    :root {
+      --google-blue: #1a73e8;
+      --google-green: #34a853;
+      --bg-dark: #121212; /* Confirm page dark bg */
+      --text-white: #ffffff;
+      --text-grey: #babbbe;
+    }
+
+    body {
+      background-color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* --- DEVICE FRAME & HOME PAGE (GPay App) ---
+    */
+    .phone-container {
+      width: 360px;
+      height: 740px;
+      background-color: #ffffff;
+      border-radius: 36px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      border: 12px solid #1a1a1a;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header & GPay Logo */
+    .header-bg {
+      background: linear-gradient(180deg, #e8f0fe 0%, #f1f5fe 100%);
+      height: 220px;
+      padding: 16px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .top-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .qr-icon {
+      width: 28px;
+      height: 28px;
+      border: 2px solid var(--google-blue);
+      border-radius: 4px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .qr-icon::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background-color: var(--google-blue);
+    }
+
+    .profile-pic {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .gpay-logo {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      font-size: 22px;
+      font-weight: 500;
+      color: #5f6368;
+    }
+
+    .gpay-logo span {
+      font-weight: 600;
+      color: #3c4043;
+    }
+
+    /* Main Content Area & Grids */
+    .content-sheet {
+      background-color: #ffffff;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      margin-top: -30px;
+      flex: 1;
+      padding: 20px 16px;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .sheet-handle {
+      width: 32px;
+      height: 4px;
+      background-color: #dadce0;
+      border-radius: 2px;
+      margin: 0 auto 16px auto;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #202124;
+      margin-bottom: 16px;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px 8px;
+      margin-bottom: 24px;
+    }
+
+    .grid-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 6px;
+    }
+
+    .item-label {
+      font-size: 12px;
+      color: #3c4043;
+      font-weight: 500;
+    }
+
+    /* Business Icons Custom Styles */
+    .biz-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .eat-fit { background-color: #1a1a1a; border: 2px dashed #dadce0; }
+    .ola { background-color: #000000; border: 3px solid #cddc39; }
+    .redbus { background-color: #d8292b; }
+    .zomato { background-color: #cb202d; }
+    .mmt { background-color: #eb2026; }
+    .ovenstory { background-color: #a61a2e; }
+    .goibibo { background-color: #f26622; }
+    .urbanclap { background-color: #212121; }
+
+    /* Floating Action Button (FAB) */
+    .fab {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--google-blue);
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 4px 10px rgba(26, 115, 232, 0.4);
+      cursor: pointer;
+    }
+
+    /* --- QR SCANNER & NEXT PAGE BUTTON ---
+    */
+    .scanner-modal {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      z-index: 10;
+      display: none; /* Initial state: hidden */
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+    }
+
+    .scanner-modal.active {
+      display: flex;
+    }
+
+    #webcam-feed {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .scanner-overlay {
+      position: relative;
+      z-index: 11;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .scanner-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .close-btn {
+      background: rgba(0, 0, 0, 0.5);
+      border: none;
+      color: white;
+      font-size: 20px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .scan-target {
+      width: 220px;
+      height: 220px;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      border-radius: 16px;
+      position: relative;
+      box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.5);
+    }
+
+    .scanner-footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .scanner-hint {
+      color: white;
+      font-size: 13px;
+    }
+
+    /* Button for Page Navigation */
+    .next-page-btn {
+      background-color: #ffffff;
+      color: var(--google-blue);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      transition: background-color 0.2s;
+    }
+
+    .next-page-btn:active {
+      background-color: #f1f3f4;
+    }
+
+    /* --- PAYMENT CONFIRMATION PAGE (IMAGE_1.PNG REPLICA) ---
+    */
+    .confirm-page {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-dark);
+      z-index: 20;
+      color: var(--text-white);
+      padding: 40px 24px;
+      display: none; /* Initial state: hidden */
+      flex-direction: column;
+      align-items: center;
+      overflow-y: auto;
+    }
+
+    .confirm-page.active {
+      display: flex;
+    }
+
+    /* Header Icons & Recipient */
+    .avatar-m {
+      width: 80px;
+      height: 80px;
+      background-color: #2e7d32;
+      border-radius: 50%;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 32px;
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+
+    .recipient-label {
+      font-size: 14px;
+      color: var(--text-grey);
+      margin-bottom: 4px;
+    }
+
+    .recipient-name {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 30px;
+    }
+
+    /* Amount Section */
+    .amount-display {
+      font-size: 64px;
+      font-weight: 400;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .amount-display .rupee {
+      font-size: 40px;
+      color: var(--text-grey);
+    }
+
+    /* Pay Again Button */
+    .pay-again-btn {
+      background-color: #8ab4f8; /* Confirm page pay again color */
+      color: #0d2c6c;
+      border: none;
+      padding: 12px 36px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 24px;
+    }
+
+    /* Status Section */
+    .status-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .completed-icon {
+      color: var(--google-green);
+      font-size: 16px;
+    }
+
+    .status-text {
+      color: var(--text-white);
+    }
+
+    /* Divider */
+    .status-divider {
+      width: 100%;
+      height: 1px;
+      background-color: #3c4043;
+      margin-bottom: 16px;
+    }
+
+    /* Timestamp */
+    .timestamp {
+      color: var(--text-grey);
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+
+    /* Transaction Details Box */
+    .details-box {
+      width: 100%;
+      background-color: transparent;
+      border: 1px solid #3c4043;
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Detail Row */
+    .detail-row {
+      display: flex;
+      justify-content: flex-start;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .bank-icon {
+      width: 28px;
+      height: 28px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      background-color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .bank-logo-confirm {
+      width: 20px; 
+      height: 20px;
+    }
+
+    .bank-name-confirm {
+      font-size: 16px;
+      font-weight: 500;
+      color: #fff;
+      flex-grow: 1;
+    }
+
+    .bank-chevron {
+      color: var(--text-grey);
+      font-size: 12px;
+    }
+
+    /* Detail Content Lines */
+    .detail-content {
+      padding-left: 0;
+    }
+
+    .detail-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .detail-value {
+      font-size: 14px;
+      color: var(--text-grey);
+    }
+
+    /* Footer GPay Logo */
+    .footer-gpay {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: auto;
+      font-size: 20px;
+      font-weight: 500;
+      color: #fff;
+      opacity: 0.8;
+    }
+
+    .footer-divider {
+        color: #3c4043;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="phone-container" id="gpayApp">
+
+    <div class="scanner-modal" id="scannerModal">
+      <video id="webcam-feed" autoplay playsinline></video>
+      <div class="scanner-overlay">
+        <div class="scanner-header">
+          <button class="close-btn" id="closeScanner">&times;</button>
+          <span>Scan any QR code</span>
+          <div style="width: 36px;"></div>
+        </div>
+        <div class="scan-target"></div>
+        
+        <div class="scanner-footer">
+          <span class="scanner-hint">Align QR code within the frame</span>
+          <button class="next-page-btn" id="nextPageBtn">Enter Details Manually →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="confirm-page" id="confirmPage">
+        <button class="close-btn" id="closeConfirm" style="position: absolute; top: 16px; left: 16px; background: rgba(255, 255, 255, 0.1);">&times;</button>
+
+        <div class="avatar-m">M</div>
+        <div class="recipient-label">To</div>
+        <div class="recipient-name">MR ANBUSELVAM S</div>
+
+        <div class="amount-display">
+            <span class="rupee">₹</span>30
+        </div>
+
+        <button class="pay-again-btn">Pay again</button>
+
+        <div class="status-area">
+            <span class="completed-icon">✓</span>
+            <span class="status-text">Completed</span>
+        </div>
+        <div class="status-divider"></div>
+
+        <div class="timestamp">11 Aug 2026, 12:41 pm</div>
+
+        <div class="details-box">
+            <div class="detail-row">
+                <div class="bank-icon">
+                    <img src="https://iconape.com/wp-content/files/yp/368817/svg/canara-bank-logo.svg" alt="Canara Bank Logo" class="bank-logo-confirm">
+                </div>
+                <div class="bank-name-confirm">Canara Bank 6931</div>
+                <div class="bank-chevron">▼</div>
+            </div>
+
+            <div class="status-divider" style="margin: 0;"></div>
+
+            <div class="detail-content">
+                <div class="detail-title">UPI transaction ID</div>
+                <div class="detail-value">658972692595</div>
+            </div>
+
+            <div class="detail-content">
+                <div class="detail-title">To: MR ANBUSELVAM S</div>
+                <div class="detail-value">PhonePe • q304255663@ybl</div>
+            </div>
+
+            <div class="detail-content">
+                <div class="detail-title">From: ABHINAV BINS (Canara Bank)</div>
+                <div class="detail-value">Google Pay • abhinavbins08@okicici</div>
+            </div>
+
+            <div class="detail-content">
+                <div class="detail-title">Google transaction ID</div>
+                <div class="detail-value">CICAgJiHusm2Bw</div>
+            </div>
+        </div>
+
+        <div class="footer-gpay">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            Pay
+        </div>
+
+    </div>
+
+    <div class="header-bg">
+      <div class="top-bar">
+        <div class="qr-icon" id="openScanner" title="Scan QR Code"></div>
+        <img class="profile-pic" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" alt="Profile">
+      </div>
+      <div class="gpay-logo">
+        <svg width="24" height="24" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+        </svg>
+        <span>Pay</span>
+      </div>
+    </div>
+
+    <div class="content-sheet">
+      <div class="sheet-handle"></div>
+
+      <div class="section-title">People</div>
+      <div class="grid-container">
+        <div class="grid-item">
+          <img class="avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Puja">
+          <span class="item-label">Puja</span>
+        </div>
+        <div class="grid-item">
+          <img class="avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="Sahil">
+          <span class="item-label">Sahil</span>
+        </div>
+        <div class="grid-item">
+          <img class="avatar" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80" alt="Anu">
+          <span class="item-label">Anu</span>
+        </div>
+        <div class="grid-item">
+          <img class="avatar" src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100&auto=format&fit=crop&q=80" alt="Meghna">
+          <span class="item-label">Meghna</span>
+        </div>
+        <div class="grid-item">
+          <img class="avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80" alt="Madhav">
+          <span class="item-label">Madhav</span>
+        </div>
+        <div class="grid-item">
+          <img class="avatar" src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&auto=format&fit=crop&q=80" alt="Vijay">
+          <span class="item-label">Vijay</span>
+        </div>
+        <div class="grid-item">
+          <img class="avatar" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&auto=format&fit=crop&q=80" alt="Rishi">
+          <span class="item-label">Rishi</span>
+        </div>
+        <div class="grid-item">
+          <img class="avatar" src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=100&auto=format&fit=crop&q=80" alt="Naina">
+          <span class="item-label">Naina</span>
+        </div>
+      </div>
+
+      <div class="section-title">Businesses</div>
+      <div class="grid-container">
+        <div class="grid-item">
+          <div class="biz-icon eat-fit">eat</div>
+          <span class="item-label">eat.fit</span>
+        </div>
+        <div class="grid-item">
+          <div class="biz-icon ola">OLA</div>
+          <span class="item-label">Ola</span>
+        </div>
+        <div class="grid-item">
+          <div class="biz-icon redbus">red</div>
+          <span class="item-label">redBus</span>
+        </div>
+        <div class="grid-item">
+          <div class="biz-icon zomato">zomato</div>
+          <span class="item-label">Zomato</span>
+        </div>
+        <div class="grid-item">
+          <div class="biz-icon mmt">my</div>
+          <span class="item-label">MakeMyTrip</span>
+        </div>
+        <div class="grid-item">
+          <div class="biz-icon ovenstory">OS</div>
+          <span class="item-label">Oven Story</span>
+        </div>
+        <div class="grid-item">
+          <div class="biz-icon goibibo">go</div>
+          <span class="item-label">goibibo</span>
+        </div>
+        <div class="grid-item">
+          <div class="biz-icon urbanclap">UC</div>
+          <span class="item-label">UrbanClap</span>
+        </div>
+      </div>
+
+      <div class="fab">
+        <span>+</span>
+        <span>New payment</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Elements for Home/Scanner
+    const openScannerBtn = document.getElementById('openScanner');
+    const closeScannerBtn = document.getElementById('closeScanner');
+    const nextPageBtn = document.getElementById('nextPageBtn');
+    const scannerModal = document.getElementById('scannerModal');
+    const webcamFeed = document.getElementById('webcam-feed');
+    let stream = null;
+
+    // Elements for Confirmation Page
+    const confirmPage = document.getElementById('confirmPage');
+    const closeConfirmBtn = document.getElementById('closeConfirm');
+
+    // --- Scanner Logic ---
+    openScannerBtn.addEventListener('click', async () => {
+      confirmPage.classList.remove('active'); // Ensure success page is hidden
+      scannerModal.classList.add('active');
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { facingMode: 'environment' } 
+        });
+        webcamFeed.srcObject = stream;
+      } catch (err) {
+        console.error("Camera access error:", err);
+        alert("Camera access was denied or is unavailable. Navigation button still works.");
+      }
+    });
+
+    closeScannerBtn.addEventListener('click', () => {
+      stopCamera();
+      scannerModal.classList.remove('active');
+    });
+
+    // --- Navigation Logic for the new button under camera ---
+    nextPageBtn.addEventListener('click', () => {
+      stopCamera();
+      scannerModal.classList.remove('active');
+      // Show the newly replica success page
+      confirmPage.classList.add('active');
+    });
+
+    // --- Close logic for the confirmation page itself ---
+    closeConfirmBtn.addEventListener('click', () => {
+        confirmPage.classList.remove('active');
+        // Return to app home
+    });
+
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+    }
+  </script>
+
+</body>
+</html>
