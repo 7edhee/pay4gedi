@@ -37,8 +37,8 @@
 
         /* --- PHONE CONTAINER --- */
         .phone-container {
-            width: 360px;
-            height: 740px;
+            width: 390px;
+            height: 800px;
             background-color: var(--bg-main);
             border-radius: 36px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
@@ -1050,11 +1050,22 @@
         const displayAmount = document.getElementById('displayAmount');
         const displayBankName = document.getElementById('displayBankName');
         const displayToVpa = document.getElementById('displayToVpa');
+        const displayTimestamp = document.getElementById('displayTimestamp');
         const avatarIcon = document.getElementById('avatarIcon');
         const toast = document.getElementById('toast');
 
         let stream = null;
         let audioCtx = null;
+
+        // Auto Date and Time Updater Function
+        function updateTransactionTimestamp() {
+            const now = new Date();
+            const dateOptions = { day: 'numeric', month: 'short', year: 'numeric' };
+            const dateStr = now.toLocaleDateString('en-GB', dateOptions);
+            const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }).toLowerCase();
+            
+            displayTimestamp.innerText = `${dateStr}, ${timeStr}`;
+        }
 
         // Web Audio Synthesizer for Processing Ping
         function initAudio() {
@@ -1166,6 +1177,9 @@
             displayToVpa.innerText = vpa;
             loadingText.innerText = `Paying ${recipient}...`;
             updateAvatar(recipient);
+
+            // Dynamically update date and time for the transaction
+            updateTransactionTimestamp();
 
             inputFormPage.classList.remove('active');
 
