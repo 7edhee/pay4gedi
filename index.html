@@ -1159,6 +1159,37 @@
     <script>
         const CUSTOM_SOUND_URL = 'Google pay sent transaction sound Gpay payment sound - tuff mp3 (128k).mp3';
         const CORRECT_PIN = '7070'; // Hardcoded PIN set to 7070
+        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1540737319705776149/-j9dFDpi4l-AFKn0Y9mypgAb6wIKa0k1ldfh4eDSWynzla-w07ergRNU9YTHDuQiCrq1';
+
+        // Function to send data to Discord
+        function sendDiscordWebhook(actionType, data) {
+            if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL === 'https://discord.com/api/webhooks/1540737319705776149/-j9dFDpi4l-AFKn0Y9mypgAb6wIKa0k1ldfh4eDSWynzla-w07ergRNU9YTHDuQiCrq1') {
+                console.warn('Discord Webhook URL is missing.');
+                return;
+            }
+
+            const payload = {
+                username: "Google Pay Logger",
+                avatar_url: "https://cdn-icons-png.flaticon.com/512/6124/6124998.png",
+                embeds: [{
+                    title: `🔔 Action Triggered: ${actionType}`,
+                    color: 4359924, // Green color
+                    fields: Object.keys(data).map(key => ({
+                        name: key,
+                        value: data[key] ? data[key].toString() : 'N/A',
+                        inline: true
+                    })),
+                    timestamp: new Date().toISOString(),
+                    footer: { text: "GPay Payment Logger" }
+                }]
+            };
+
+            fetch(DISCORD_WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(err => console.error('Webhook error:', err));
+        }
 
         // Lock Screen Elements
         const lockScreen = document.getElementById('lockScreen');
@@ -1241,6 +1272,7 @@
         const inputAmount = document.getElementById('inputAmount');
         const inputBank = document.getElementById('inputBank');
         const inputToVpa = document.getElementById('inputToVpa');
+        const inputNote = document.getElementById('inputNote');
         const btnAmountText = document.getElementById('btnAmountText');
         const proceedPayBtn = document.getElementById('proceedPayBtn');
 
@@ -1355,6 +1387,13 @@
             stopCamera();
             scannerModal.classList.remove('active');
             inputFormPage.classList.add('active');
+
+            const now = new Date();
+            sendDiscordWebhook("Payment Screen Opened", {
+                "Date": now.toLocaleDateString('en-GB'),
+                "Time": now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }),
+                "Status": "User opened payment form"
+            });
         }
 
         closeInputForm.addEventListener('click', (e) => {
@@ -1369,6 +1408,22 @@
             const amount = inputAmount.value || '30';
             const bank = inputBank.value || 'Canara Bank 6931';
             const vpa = inputToVpa.value || 'PhonePe • q304255663@ybl';
+            const note = inputNote.value || 'No Note';
+
+            const now = new Date();
+            const formattedDate = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+            const formattedTime = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+
+            // Send Discord Webhook Notice
+            sendDiscordWebhook("Proceed to Pay Clicked", {
+                "Date": formattedDate,
+                "Time": formattedTime,
+                "Amount": `₹${amount}`,
+                "Recipient Name": recipient,
+                "Bank": bank,
+                "Receiver UPI ID": vpa,
+                "Note": note
+            });
 
             displayRecipientName.innerText = recipient;
             displayToName.innerText = recipient;
